@@ -436,7 +436,7 @@
         "settings": {
           "Name": "[variables('domainToJoin')]",
           "OUPath": "[variables('ouPath')]",
-          "User": "[concat(variables('domainToJoin')),'\\', parameters('domainUsername'))]",
+          "User": "[concat(variables('domainToJoin'),'\\', parameters('domainUsername'))]",
           "Restart": "true",
           "Options": "[variables('domainJoinOptions')]"
         },
