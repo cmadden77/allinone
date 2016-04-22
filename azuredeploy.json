@@ -235,6 +235,10 @@
       "type": "Microsoft.Compute/virtualMachines",
       "name": "[variables('vmName')]",
       "location": "[variables('location')]",
+      "dependsOn": [
+        "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]",
+        "[concat('Microsoft.Storage/storageAccounts/', variables('CreateStorageAccountName'))]"
+      ],
       "properties": {
         "diagnosticsProfile": {
           "bootDiagnostics": {
@@ -412,11 +416,7 @@
               "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]"
             }
           ]
-        },
-        "dependsOn": [
-          "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]",
-          "[concat('Microsoft.Storage/storageAccounts/', variables('CreateStorageAccountName'))]"
-        ]
+        }
       }
     },
     {
