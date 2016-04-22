@@ -1,4 +1,4 @@
-﻿{
+{
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
@@ -421,26 +421,28 @@
       }
     },
     {
+      "apiVersion": "[variables('apiVersion')]",
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(variables('vmName'),'/', variables('DscExtensionName'))]",
-      "apiVersion": "2015-06-15",
-      "location": "[variables('location')]",
+      "name": "[concat(variables('vmName'),'/joindomain')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'))]"
+      ],
       "properties": {
-        "protectedSettings": null,
-        "publisher": "Microsoft.Powershell",
-        "settings": {
-          "ModulesUrl": "[parameters('modulesUrl')]",
-          "SasToken": "",
-          "ConfigurationFunction": "[variables('configurationFunction')]",
-          "Properties": {
-            "MachineName": "[variables('vmName')]"
-
-          }
+        "protectedsettings": {
+          "Password": "[parameters('domainPassword')]"
         },
-        "type": "DSC",
-        "typeHandlerVersion": "2.8"
+        "publisher": "Microsoft.Compute",
+        "settings": {
+          "Name": "[variables('domainToJoin')]",
+          "OUPath": "[variables('ouPath')]",
+          "User": "[concat(variables('domainToJoin')),'\\', parameters('domainUsername'))]",
+          "Restart": "true",
+          "Options": "[variables('domainJoinOptions')]"
+        },
+        "type": "JsonADDomainExtension",
+        "typeHandlerVersion": "1.0"
       }
-
     },
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
