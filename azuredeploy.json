@@ -464,7 +464,7 @@
         "typeHandlerVersion": "1.3",
         "settings": {
           "fileUris": [ "[parameters('SQLStoragePool')]" ],
-          "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -file ',parameters('SQLStoragePool'),' ','-NumberOfDisksInLogPool',parameters('NumberOfDisksInLogPool'),' ','-NumberOfDisksInDataPool',parameters('NumberOfDisksInDataPool'))]"
+          "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -file ',parameters('SQLStoragePool'),' ','-NumberOfDisksInLogPool',' ',parameters('NumberOfDisksInLogPool'),' ','-NumberOfDisksInDataPool', ' ',parameters('NumberOfDisksInDataPool'))]"
         }
       },
 
