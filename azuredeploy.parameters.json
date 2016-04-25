@@ -12,7 +12,7 @@
       "value": "https://us4prodclientsarmaxvms.blob.core.windows.net/images/images/SQL-US4-PROD-2015-11-17-datadisk-0-2015-11-17.vhd"
     },
     "dnsLabelPrefix": {
-      "value": "axtesthioiop06"
+      "value": "axtesthioiop04"
     },
     "domainUsername": {
       "value": "adadministrator"
@@ -32,11 +32,8 @@
     "vmSize": {
       "value": "Standard_d14"
     },
-    "modulesUrl": {
-      "value": "https://github.com/Azure/azure-quickstart-templates/blob/master/301-vm-32-data-disks-high-iops/StoragePool.ps1.zip?raw=true"
-    },
     "SQLStoragePool": {
-      "value": "https://raw.githubusercontent.com/cmadden77/allinone/master/configure-sqlstorage.ps1"
+      "value": "https://us4prodclientsarmaxvms.blob.core.windows.net/scripts/configure-sqlstorage.ps1"
     },
     "createStorageAccountType": {
       "value": "Standard_LRS"
@@ -48,10 +45,10 @@
       "value": "prod"
     },
     "ClientCode": {
-      "value": "jj"
+      "value": "tt"
     },
     "clientShortName": {
-      "value": "test06"
+      "value": "test05"
     },
     "currentDate": {
       "value": "16-04-25"
