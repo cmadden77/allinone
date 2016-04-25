@@ -36,7 +36,7 @@
       "value": "https://github.com/Azure/azure-quickstart-templates/blob/master/301-vm-32-data-disks-high-iops/StoragePool.ps1.zip?raw=true"
     },
     "SQLStoragePool": {
-      "value": "https://github.com/cmadden77/allinone/blob/master/SQLStoragePool.zip?raw=true"
+      "value": "https://raw.githubusercontent.com/cmadden77/allinone/master/configure-sqlstorage.ps1"
     },
     "NumberOfDisksInLogPool": {
       "value": "2"
