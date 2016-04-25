@@ -435,7 +435,7 @@
         "typeHandlerVersion": "1.0"
       },
       "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachines/extensions/', variables('DscExtensionName'))]"
+        "[concat('Microsoft.Compute/virtualMachines/extensions/', variables('vmName'),'/', variables('DscExtensionName'))]"
       ]
     },
     {
