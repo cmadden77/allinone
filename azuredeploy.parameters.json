@@ -38,12 +38,6 @@
     "SQLStoragePool": {
       "value": "https://raw.githubusercontent.com/cmadden77/allinone/master/configure-sqlstorage.ps1"
     },
-    "NumberOfDisksInLogPool": {
-      "value": "2"
-    },
-    "NumberOfDisksInDataPool": {
-      "value": "2"
-    },
     "createStorageAccountType": {
       "value": "Standard_LRS"
     },
