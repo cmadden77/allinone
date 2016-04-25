@@ -54,7 +54,7 @@
       }
     },
     "sizeOfEachDataDiskInGB": {
-      "type": "String",
+      "type": "string",
       "metadata": {
         "description": "There will be 32 data disks created of this size and then striped. The total capacity will be 32x whatever you specify here"
       }
@@ -66,25 +66,25 @@
       }
     },
     "modulesUrl": {
-      "type": "String",
+      "type": "string",
       "metadata": {
         "description": "URL for the powershell script configuration module. "
       }
     },
     "SQLStoragePool": {
-      "type": "String",
+      "type": "string",
       "metadata": {
         "description": "URL for the SQL Data powershell script configuration module. "
       }
     },
     "NumberOfDisksInLogPool": {
-      "type": "string",
+      "type": "int",
       "metadata": {
-        "description": "Number Of Disks In LogPool. "
+        "description": "Number Of Disks In Log Pool. "
       }
     },
     "NumberOfDisksInDataPool": {
-      "type": "string",
+      "type": "int",
       "metadata": {
         "description": "Number Of Disks In Data Pool. "
       }
