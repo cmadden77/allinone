@@ -78,13 +78,13 @@
       }
     },
     "NumberOfDisksInLogPool": {
-      "type": "int",
+      "type": "string",
       "metadata": {
         "description": "Number Of Disks In LogPool. "
       }
     },
     "NumberOfDisksInDataPool": {
-      "type": "int",
+      "type": "string",
       "metadata": {
         "description": "Number Of Disks In Data Pool. "
       }
