@@ -65,12 +65,6 @@
         "description": "This is the size of your VM"
       }
     },
-    "modulesUrl": {
-      "type": "string",
-      "metadata": {
-        "description": "URL for the powershell script configuration module. "
-      }
-    },
     "SQLStoragePool": {
       "type": "string",
       "metadata": {
