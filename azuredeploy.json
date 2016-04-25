@@ -77,6 +77,18 @@
         "description": "URL for the SQL Data powershell script configuration module. "
       }
     },
+    "NumberOfDisksInLogPool": {
+      "type": "int",
+      "metadata": {
+        "description": "Number Of Disks In LogPool. "
+      }
+    },
+    "NumberOfDisksInDataPool": {
+      "type": "int",
+      "metadata": {
+        "description": "Number Of Disks In Data Pool. "
+      }
+    },
     "CreateStorageAccountType": {
       "type": "string",
       "metadata": {
@@ -435,31 +447,27 @@
         "typeHandlerVersion": "1.0"
       },
       "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'),'/extensions/', variables('DscExtensionName'))]"
+        "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'),'/extensions/', 'CustomScriptExtension')]"
       ]
     },
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(variables('vmName'),'/', variables('DscExtensionName'))]",
-      "apiVersion": "2015-05-01-preview",
-      "location": "[variables('location')]",
+      "name": "[concat(variables('vmName'),'/CustomScriptExtension')]",
+      "apiVersion": "variables(apiversion)",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'))]"
+      ],
       "properties": {
-        "publisher": "Microsoft.Powershell",
-        "type": "DSC",
-        "typeHandlerVersion": "2.8",
+        "publisher": "Microsoft.Compute",
+        "type": "CustomScriptExtension",
+        "typeHandlerVersion": "1.3",
         "settings": {
-          "ModulesUrl": "[parameters('SQLStoragePool')]",
-          "SasToken": "",
-          "ConfigurationFunction": "[variables('configurationFunction')]",
-          "Properties": {
-            "MachineName": "[variables('vmName')]",
-            "numberOfDisksInDataPool": 5,
-            "numberOfDisksInLogPool": 5
-
-          }
-        },
-        "protectedSettings": null
+          "fileUris": [ "[parameters('SQLStoragePool')]" ],
+          "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -file ',parameters('SQLStoragePool'),' ','-NumberOfDisksInLogPool',parameters('NumberOfDisksInLogPool'),' ','-NumberOfDisksInDataPool',parameters('NumberOfDisksInDataPool'))]"
+        }
       },
+
       "dependsOn": [
         "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'))]",
         "[concat('Microsoft.Storage/storageAccounts/', variables('CreateStorageAccountName'))]",
