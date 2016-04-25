@@ -77,18 +77,6 @@
         "description": "URL for the SQL Data powershell script configuration module. "
       }
     },
-    "NumberOfDisksInLogPool": {
-      "type": "int",
-      "metadata": {
-        "description": "Number Of Disks In Log Pool. "
-      }
-    },
-    "NumberOfDisksInDataPool": {
-      "type": "int",
-      "metadata": {
-        "description": "Number Of Disks In Data Pool. "
-      }
-    },
     "CreateStorageAccountType": {
       "type": "string",
       "metadata": {
