@@ -12,7 +12,7 @@
       "value": "https://us4prodclientsarmaxvms.blob.core.windows.net/images/images/SQL-US4-PROD-2015-11-17-datadisk-0-2015-11-17.vhd"
     },
     "dnsLabelPrefix": {
-      "value": "axtesthioiop04"
+      "value": "axtesthioiop06"
     },
     "domainUsername": {
       "value": "adadministrator"
@@ -48,10 +48,10 @@
       "value": "prod"
     },
     "ClientCode": {
-      "value": "tt"
+      "value": "jj"
     },
     "clientShortName": {
-      "value": "test05"
+      "value": "test06"
     },
     "currentDate": {
       "value": "16-04-25"
