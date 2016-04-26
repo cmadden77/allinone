@@ -71,6 +71,18 @@
         "description": "URL for the SQL Data powershell script configuration module. "
       }
     },
+    "NumberOfDisksInLogPool": {
+      "type": "int",
+      "metadata": {
+        "description": "Number Of Disks In Log Pool. "
+      }
+    },
+    "NumberOfDisksInDataPool": {
+      "type": "int",
+      "metadata": {
+        "description": "Number Of Disks In Data Pool. "
+      }
+    },
     "CreateStorageAccountType": {
       "type": "string",
       "metadata": {
@@ -147,6 +159,11 @@
     "osDiskVhdName": "[concat('http://',parameters('userImageStorageAccountName'),'.blob.core.windows.net/vhds/',variables('vmName'),parameters('currentdate'),'-OS.vhd')]",
     "DataDisk0VhdName": "[concat('http://',parameters('userImageStorageAccountName'),'.blob.core.windows.net/vhds/',variables('vmName'),parameters('currentdate'),'-DataDisk-0.vhd')]",
     "apiVersion": "2015-06-15",
+    "ScriptStorageAccountName": "us4prodclientsarmaxvms",
+    "ScriptFileToRun": "configure-sqlstorage.ps1",
+    "ScriptStorageAccountResourceGroup": "ax-mgmt-dc",
+    "accountid": "[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/',variables('ScriptStorageAccountResourceGroup'),'/providers/','Microsoft.Storage/storageAccounts/', variables('ScriptStorageAccountName'))]",
+    "commandToExecute": "[concat('powershell.exe -File', ' ', variables('ScriptFileToRun'),' ','-NumberOfDisksInLogPool',' ',variables('NumberOfDisksInLogPool'),' ','-NumberOfDisksInDataPool',' ',variables('NumberOfDisksInDataPool'))]",
     "NumberOfDisksInLogPool": "2",
     "NumberOfDisksInDataPool": "2",
     "configurationFunction": "SQLStoragePool.ps1\\SQLStoragePool",
@@ -437,16 +454,18 @@
       "name": "[concat(variables('vmName'),'/CustomScriptExtension')]",
       "apiVersion": "[variables('apiVersion')]",
       "location": "[resourceGroup().location]",
-      "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'))]"
-      ],
       "properties": {
         "publisher": "Microsoft.Compute",
         "type": "CustomScriptExtension",
         "typeHandlerVersion": "1.3",
+        "autoUpgradeMinorVersion": "true",
         "settings": {
           "fileUris": [ "[parameters('SQLStoragePool')]" ],
-          "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -file ',parameters('SQLStoragePool'),' ','-NumberOfDisksInLogPool',' ',variables('NumberOfDisksInLogPool'),' ','-NumberOfDisksInDataPool',' ',variables('NumberOfDisksInDataPool'))]"
+          "commandToExecute": "[variables('commandToExecute')]"
+        },
+        "protectedSettings": {
+          "storageAccountName": "[variables('ScriptStorageAccountName')]",
+          "storageAccountKey": "[listKeys(variables('accountid'),'2015-05-01-preview').key1]"
         }
       },
 
