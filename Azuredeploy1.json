@@ -1,4 +1,4 @@
-﻿{
+{
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
@@ -69,18 +69,6 @@
       "type": "string",
       "metadata": {
         "description": "URL for the SQL Data powershell script configuration module. "
-      }
-    },
-    "NumberOfDisksInLogPool": {
-      "type": "int",
-      "metadata": {
-        "description": "Number Of Disks In Log Pool. "
-      }
-    },
-    "NumberOfDisksInDataPool": {
-      "type": "int",
-      "metadata": {
-        "description": "Number Of Disks In Data Pool. "
       }
     },
     "CreateStorageAccountType": {
