@@ -144,7 +144,7 @@
   },
   "variables": {
     "location": "[resourceGroup().location]",
-    "vmName": "[concat('AX-',parameters('ClientShortName'),'-DB-',parameters('clientcode'))]",
+    "vmName": "ax-test-ex-01",
     "DomaintoJoin": "ad.axioma.com",
     "ouPath": "OU=Customers; DC=ad; DC=axioma; DC=com",
     "domainJoinOptions": "3",
