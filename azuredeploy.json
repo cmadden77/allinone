@@ -4,6 +4,7 @@
   "parameters": {
     "userImageStorageAccountName": {
       "type": "string",
+      "defaultValue": "us4prodclientsarmaxvms",
       "metadata": {
         "description": "This is the name of the your storage account"
       }
@@ -25,20 +26,9 @@
     },
     "dnsLabelPrefix": {
       "type": "string",
+      "defaultValue": "axtesthioiop02",
       "metadata": {
         "description": "DNS Label for the Public IP. Must be lowercase. It should match with the following regular expression: ^[a-z][a-z0-9-]{1,61}[a-z0-9]$ or it will raise an error."
-      }
-    },
-    "domainUsername": {
-      "type": "string",
-      "metadata": {
-        "description": "Username of the account on the domain"
-      }
-    },
-    "domainPassword": {
-      "type": "securestring",
-      "metadata": {
-        "description": "Password of the account on the domain"
       }
     },
     "adminUserName": {
@@ -53,29 +43,47 @@
         "description": "Password for the Virtual Machine"
       }
     },
-    "sizeOfEachDataDiskInGB": {
+    "osType": {
       "type": "string",
+      "allowedValues": [
+        "Windows",
+        "Linux"
+      ],
+      "metadata": {
+        "description": "This is the OS that your VM will be running"
+      }
+    },
+    "sizeOfEachDataDiskInGB": {
+      "defaultValue": "10",
+      "type": "String",
       "metadata": {
         "description": "There will be 32 data disks created of this size and then striped. The total capacity will be 32x whatever you specify here"
       }
     },
     "vmSize": {
       "type": "string",
+      "defaultValue": "Standard_d14",
       "metadata": {
         "description": "This is the size of your VM"
       }
     },
-    "SQLStoragePool": {
-      "type": "string",
+    "modulesUrl": {
+      "defaultValue": "https://github.com/Azure/azure-quickstart-templates/blob/master/301-vm-32-data-disks-high-iops/StoragePool.ps1.zip?raw=true",
+      "type": "String",
       "metadata": {
-        "description": "URL for the SQL Data powershell script configuration module. "
+        "description": "URL for the powershell script configuration module. "
       }
     },
     "CreateStorageAccountType": {
       "type": "string",
-      "metadata": {
-        "description": "Type of Storage account to be created. "
-      }
+      "defaultValue": "Standard_LRS",
+      "allowedValues": [
+        "Standard_LRS",
+        "Standard_ZRS",
+        "Standard_GRS",
+        "Standard_RAGRS",
+        "Premium_LRS"
+      ]
     },
     "datacenterCode": {
       "type": "string",
@@ -109,6 +117,8 @@
 
     "ClientCode": {
       "type": "string",
+      "defaultValue": "xx",
+
       "metadata": {
         "description": "Specify the Client code"
       }
@@ -123,38 +133,41 @@
     },
     "currentDate": {
       "type": "string",
-      "defaultValue": "16-04-20",
+      "defaultValue": "16-04-13",
 
       "metadata": {
         "description": "current date in the format %Y-%m-%d"
       }
-    }
+    },
+      "_artifactsLocation": {
+          "type": "string",
+          "metadata": {
+              "description": "Auto-generated container in staging storage account to receive post-build staging folder upload"
+          }
+      },
+      "_artifactsLocationSasToken": {
+          "type": "securestring",
+          "metadata": {
+              "description": "Auto-generated token to access _artifactsLocation"
+          }
+      }
   },
   "variables": {
     "location": "[resourceGroup().location]",
     "vmName": "[concat('AX-',parameters('ClientShortName'),'-DB-',parameters('clientcode'))]",
-    "DomaintoJoin": "ad.axioma.com",
-    "ouPath": "OU=Customers; DC=ad; DC=axioma; DC=com",
-    "domainJoinOptions": "3",
-    "publicIPAddressName": "[concat(variables('vmName'),'PublicIP')]",
-    "existingVNETName": "MGMTVNET",
-    "existingSubnetName": "MGMTSubnet,",
-    "nicName": "[concat(variables('vmName'),'NIC')]",
+    "publicIPAddressName": "userImagePublicIP",
+    "virtualNetworkName": "userImageVNET",
+    "nicName": "userImageVMNic",
+    "addressPrefix": "10.0.0.0/16",
+    "subnet1Name": "Subnet-1",
+    "subnet1Prefix": "10.0.0.0/24",
     "publicIPAddressType": "Dynamic",
-    "vnetID": "[resourceId('ax-mgmt-dc', 'Microsoft.Network/virtualNetworks', variables('existingVNETName'))]",
-    "subnetId": "MGMTSubnet",
-    "subnetRef": "[concat(variables('vnetId'), '/subnets/', variables('subnetId'))]",
+    "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]",
+    "subnet1Ref": "[concat(variables('vnetID'),'/subnets/',variables('subnet1Name'))]",
     "osDiskVhdName": "[concat('http://',parameters('userImageStorageAccountName'),'.blob.core.windows.net/vhds/',variables('vmName'),parameters('currentdate'),'-OS.vhd')]",
     "DataDisk0VhdName": "[concat('http://',parameters('userImageStorageAccountName'),'.blob.core.windows.net/vhds/',variables('vmName'),parameters('currentdate'),'-DataDisk-0.vhd')]",
     "apiVersion": "2015-06-15",
-    "ScriptStorageAccountName": "us4prodclientsarmaxvms",
-    "ScriptFileToRun": "configure-sqlstorage.ps1",
-    "ScriptStorageAccountResourceGroup": "ax-mgmt-dc",
-    "accountid": "[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/',variables('ScriptStorageAccountResourceGroup'),'/providers/','Microsoft.Storage/storageAccounts/', variables('ScriptStorageAccountName'))]",
-    "commandToExecute": "[concat('powershell.exe -File', ' ', variables('ScriptFileToRun'),' ','-NumberOfDisksInLogPool',' ',variables('NumberOfDisksInLogPool'),' ','-NumberOfDisksInDataPool',' ',variables('NumberOfDisksInDataPool'))]",
-    "NumberOfDisksInLogPool": "2",
-    "NumberOfDisksInDataPool": "2",
-    "configurationFunction": "SQLStoragePool.ps1\\SQLStoragePool",
+    "configurationFunction": "StoragePool.ps1\\StoragePool",
     "DscExtensionName": "DscExtension",
     "dataDisk1VhdName": "[concat('http://',variables('CreateStorageAccountName'),'.blob.core.windows.net/vhds/',variables('vmName'),'dataDisk1.vhd')]",
     "dataDisk2VhdName": "[concat('http://',variables('CreateStorageAccountName'),'.blob.core.windows.net/vhds/',variables('vmName'),'dataDisk2.vhd')]",
@@ -200,11 +213,33 @@
     },
     {
       "apiVersion": "[variables('apiVersion')]",
+      "type": "Microsoft.Network/virtualNetworks",
+      "name": "[variables('virtualNetworkName')]",
+      "location": "[variables('location')]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[variables('addressPrefix')]"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "[variables('subnet1Name')]",
+            "properties": {
+              "addressPrefix": "[variables('subnet1Prefix')]"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "[variables('apiVersion')]",
       "type": "Microsoft.Network/networkInterfaces",
       "name": "[variables('nicName')]",
       "location": "[variables('location')]",
       "dependsOn": [
-        "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]"
+        "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]",
+        "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
       ],
       "properties": {
         "ipConfigurations": [
@@ -216,7 +251,7 @@
                 "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
               },
               "subnet": {
-                "id": "[variables('subnetRef')]"
+                "id": "[variables('subnet1Ref')]"
               }
             }
           }
@@ -229,16 +264,9 @@
       "name": "[variables('vmName')]",
       "location": "[variables('location')]",
       "dependsOn": [
-        "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]",
-        "[concat('Microsoft.Storage/storageAccounts/', variables('CreateStorageAccountName'))]"
+        "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]"
       ],
       "properties": {
-        "diagnosticsProfile": {
-          "bootDiagnostics": {
-            "enabled": "true",
-            "storageUri": "[concat('http://',variables('CreateStorageAccountName'),'.blob.core.windows.net')]"
-          }
-        },
         "hardwareProfile": {
           "vmSize": "[parameters('vmSize')]"
         },
@@ -249,30 +277,29 @@
         },
         "storageProfile": {
           "osDisk": {
+            "name": "[concat(variables('vmName'),'-osDisk')]",
+            "osType": "[parameters('osType')]",
             "caching": "ReadWrite",
             "createOption": "FromImage",
             "image": {
               "uri": "[parameters('osDiskVhdUri')]"
             },
-            "name": "[concat(variables('vmName'),'-osDisk')]",
-            "osType": "Windows",
             "vhd": {
               "uri": "[variables('osDiskVhdName')]"
             }
           },
           "dataDisks": [
-
             {
-              "caching": "None",
+              "lun": 0,
+              "name": "[concat(variables('vmName'),'-DataDisk0')]",
               "createOption": "FromImage",
               "image": {
                 "uri": "[parameters('DataDisk0VhdUri')]"
               },
-              "lun": 0,
-              "name": "[concat(variables('vmName'),'-DataDisk0')]",
               "vhd": {
                 "Uri": "[variables('dataDisk0VhdName')]"
-              }
+              },
+              "caching": "None"
             },
             {
               "name": "datadisk1",
@@ -406,57 +433,43 @@
         "networkProfile": {
           "networkInterfaces": [
             {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]"
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nicName'))]"
             }
           ]
-        }
-      }
-    },
-    {
-      "apiVersion": "[variables('apiVersion')]",
-      "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(variables('vmName'),'/joindomain')]",
-      "location": "[resourceGroup().location]",
-      "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'))]",
-        "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'),'/extensions/', 'CustomScriptExtension')]"
-      ],
-      "properties": {
-        "protectedsettings": {
-          "Password": "[parameters('domainPassword')]"
         },
-        "publisher": "Microsoft.Compute",
-        "settings": {
-          "Name": "[variables('domainToJoin')]",
-          "OUPath": "[variables('ouPath')]",
-          "User": "[concat(variables('domainToJoin'),'\\', parameters('domainUsername'))]",
-          "Restart": "true",
-          "Options": "[variables('domainJoinOptions')]"
-        },
-        "type": "JsonADDomainExtension",
-        "typeHandlerVersion": "1.0"
-      }
-    },
-    {
-      "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(variables('vmName'),'/CustomScriptExtension')]",
-      "apiVersion": "[variables('apiVersion')]",
-      "location": "[resourceGroup().location]",
-      "properties": {
-        "publisher": "Microsoft.Compute",
-        "type": "CustomScriptExtension",
-        "typeHandlerVersion": "1.3",
-        "autoUpgradeMinorVersion": "true",
-        "settings": {
-          "fileUris": [ "[parameters('SQLStoragePool')]" ],
-          "commandToExecute": "[variables('commandToExecute')]"
-        },
-        "protectedSettings": {
-          "storageAccountName": "[variables('ScriptStorageAccountName')]",
-          "storageAccountKey": "[listKeys(variables('accountid'),'2015-05-01-preview').key1]"
+
+        "diagnosticsProfile": {
+          "bootDiagnostics": {
+            "enabled": "true",
+            "storageUri": "[concat('http://',variables('CreateStorageAccountName'),'.blob.core.windows.net')]"
+          }
         }
       },
+        "resources": [
+            
+        ]
+    },
 
+    {
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "[concat(variables('vmName'),'/', variables('DscExtensionName'))]",
+      "apiVersion": "2015-05-01-preview",
+      "location": "[variables('location')]",
+      "properties": {
+        "publisher": "Microsoft.Powershell",
+        "type": "DSC",
+        "typeHandlerVersion": "2.8",
+        "settings": {
+          "ModulesUrl": "[parameters('modulesUrl')]",
+          "SasToken": "",
+          "ConfigurationFunction": "[variables('configurationFunction')]",
+          "Properties": {
+            "MachineName": "[variables('vmName')]"
+
+          }
+        },
+        "protectedSettings": null
+      },
       "dependsOn": [
         "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'))]",
         "[concat('Microsoft.Storage/storageAccounts/', variables('CreateStorageAccountName'))]",
@@ -465,4 +478,4 @@
     }
 
   ]
-}
+    }
