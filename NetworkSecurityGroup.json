@@ -1,0 +1,383 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "ClientShortName": {
+      "type": "string"
+    },
+    "clientcode": {
+      "type": "string"
+    },
+    "IPRange": {
+      "type": "string"
+    }
+
+
+  },
+  "variables": {
+    "location": "[resourceGroup().location]",
+    "NetworkSecurityGroupName": "[concat('AX-',parameters('ClientShortName'),'-',parameters('clientcode'),'-NSG')]",
+    "MGMTServers": "10.254.1.0/29"
+
+  },
+  "resources": [
+    {
+      "comments": "Current Network Security Group in Use",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "name": "[variables('NetworkSecurityGroupName')]",
+      "apiVersion": "2015-06-15",
+      "location": "[variables('location')]",
+      "properties": {
+        "securityRules": [
+
+          {
+            "name": "[concat('Allow-',parameters('ClientShortName'),'-NTP-MGMT')]",
+            "properties": {
+              "protocol": "*",
+              "sourcePortRange": "*",
+              "destinationPortRange": "123",
+              "sourceAddressPrefix": "[parameters('IPRange')]",
+              "destinationAddressPrefix": "[variables('MGMTServers')]",
+              "access": "Allow",
+              "priority": 169,
+              "direction": "Outbound"
+            }
+          },
+          {
+            "name": "[concat('Allow-',parameters('ClientShortName'),'-LDAP-MGMT')]",
+            "properties": {
+              "protocol": "*",
+              "sourcePortRange": "*",
+              "destinationPortRange": "389",
+              "sourceAddressPrefix": "[parameters('IPRange')]",
+              "destinationAddressPrefix": "[variables('MGMTServers')]",
+              "access": "Allow",
+              "priority": 170,
+              "direction": "Outbound"
+            }
+          },
+          {
+            "name": "[concat('Allow-',parameters('ClientShortName'),'-LDAPSSL-MGMT')]",
+            "properties": {
+              "protocol": "*",
+              "sourcePortRange": "*",
+              "destinationPortRange": "636",
+              "sourceAddressPrefix": "[parameters('IPRange')]",
+              "destinationAddressPrefix": "[variables('MGMTServers')]",
+              "access": "Allow",
+              "priority": 171,
+              "direction": "Outbound"
+            }
+          },
+          {
+            "name": "[concat('Allow-',parameters('ClientShortName'),'-Kerberos-MGMT')]",
+            "properties": {
+              "protocol": "*",
+              "sourcePortRange": "*",
+              "destinationPortRange": "88",
+              "sourceAddressPrefix": "[parameters('IPRange')]",
+              "destinationAddressPrefix": "[variables('MGMTServers')]",
+              "access": "Allow",
+              "priority": 172,
+              "direction": "Outbound"
+            }
+          },
+          {
+            "name": "[concat('Allow-',parameters('ClientShortName'),'-DNS-MGMT')]",
+            "properties": {
+              "protocol": "*",
+              "sourcePortRange": "*",
+              "destinationPortRange": "53",
+              "sourceAddressPrefix": "[parameters('IPRange')]",
+              "destinationAddressPrefix": "[variables('MGMTServers')]",
+              "access": "Allow",
+              "priority": 173,
+              "direction": "Outbound"
+            }
+          },
+          {
+            "name": "[concat('Allow-',parameters('ClientShortName'),'-endpointmapper-MGMT')]",
+            "properties": {
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "135",
+              "sourceAddressPrefix": "[parameters('IPRange')]",
+              "destinationAddressPrefix": "[variables('MGMTServers')]",
+              "access": "Allow",
+              "priority": 174,
+              "direction": "Outbound"
+            }
+          },
+          {
+            "name": "[concat('Allow-',parameters('ClientShortName'),'-SMB-MGMT')]",
+            "properties": {
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "445",
+              "sourceAddressPrefix": "[parameters('IPRange')]",
+              "destinationAddressPrefix": "[variables('MGMTServers')]",
+              "access": "Allow",
+              "priority": 175,
+              "direction": "Outbound"
+            }
+          },
+          {
+            "name": "[concat('Allow-',parameters('ClientShortName'),'-keyMGMT-MGMT')]",
+            "properties": {
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "1688",
+              "sourceAddressPrefix": "[parameters('IPRange')]",
+              "destinationAddressPrefix": "[variables('MGMTServers')]",
+              "access": "Allow",
+              "priority": 176,
+              "direction": "Outbound"
+            }
+          },
+          {
+            "name": "[concat('Allow-',parameters('ClientShortName'),'-GC-MGMT')]",
+            "properties": {
+              "protocol": "*",
+              "sourcePortRange": "*",
+              "destinationPortRange": "3268",
+              "sourceAddressPrefix": "[parameters('IPRange')]",
+              "destinationAddressPrefix": "[variables('MGMTServers')]",
+              "access": "Allow",
+              "priority": 177,
+              "direction": "Outbound"
+            }
+          },
+          {
+            "name": "[concat('Allow-',parameters('ClientShortName'),'-WSUS-MGMT')]",
+            "properties": {
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "8530",
+              "sourceAddressPrefix": "[parameters('IPRange')]",
+              "destinationAddressPrefix": "[variables('MGMTServers')]",
+              "access": "Allow",
+              "priority": 178,
+              "direction": "Outbound"
+            }
+          },
+          {
+            "name": "[concat('Allow-',parameters('ClientShortName'),'-WSUShttp-MGMT')]",
+            "properties": {
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "80",
+              "sourceAddressPrefix": "[parameters('IPRange')]",
+              "destinationAddressPrefix": "[variables('MGMTServers')]",
+              "access": "Allow",
+              "priority": 179,
+              "direction": "Outbound"
+            }
+          },
+          {
+            "name": "[concat('Allow-',parameters('ClientShortName'),'-dynamic-MGMT')]",
+            "properties": {
+              "protocol": "*",
+              "sourcePortRange": "*",
+              "destinationPortRange": "1025-5000",
+              "sourceAddressPrefix": "[parameters('IPRange')]",
+              "destinationAddressPrefix": "[variables('MGMTServers')]",
+              "access": "Allow",
+              "priority": 180,
+              "direction": "Outbound"
+            }
+          },
+          {
+            "name": "[concat('Allow-',parameters('ClientShortName'),'-dynamicE-MGMT')]",
+            "properties": {
+              "protocol": "*",
+              "sourcePortRange": "*",
+              "destinationPortRange": "49152-65535",
+              "sourceAddressPrefix": "[parameters('IPRange')]",
+              "destinationAddressPrefix": "[variables('MGMTServers')]",
+              "access": "Allow",
+              "priority": 181,
+              "direction": "Outbound"
+            }
+          },
+          {
+            "name": "[concat('Allow-',parameters('ClientShortName'),'-kerberoskey-MGMT')]",
+            "properties": {
+              "protocol": "*",
+              "sourcePortRange": "*",
+              "destinationPortRange": "464",
+              "sourceAddressPrefix": "[parameters('IPRange')]",
+              "destinationAddressPrefix": "[variables('MGMTServers')]",
+              "access": "Allow",
+              "priority": 182,
+              "direction": "Outbound"
+            }
+          },
+          {
+            "name": "[concat('Allow-',parameters('ClientShortName'),'-Internet-MGMT')]",
+            "properties": {
+              "protocol": "*",
+              "sourcePortRange": "*",
+              "destinationPortRange": "80",
+              "sourceAddressPrefix": "[parameters('IPRange')]",
+              "destinationAddressPrefix": "Internet",
+              "access": "Allow",
+              "priority": 197,
+              "direction": "Outbound"
+            }
+          },
+          {
+            "name": "[concat('Allow-',parameters('ClientShortName'),'-Internetssl-MGMT')]",
+            "properties": {
+              "protocol": "*",
+              "sourcePortRange": "*",
+              "destinationPortRange": "443",
+              "sourceAddressPrefix": "[parameters('IPRange')]",
+              "destinationAddressPrefix": "Internet",
+              "access": "Allow",
+              "priority": 198,
+              "direction": "Outbound"
+            }
+          },
+          {
+            "name": "[concat('Deny-',parameters('ClientShortName'),'-MGMT')]",
+            "properties": {
+              "protocol": "*",
+              "sourcePortRange": "*",
+              "destinationPortRange": "*",
+              "sourceAddressPrefix": "[parameters('IPRange')]",
+              "destinationAddressPrefix": "10.254.1.0/24",
+              "access": "Deny",
+              "priority": 199,
+              "direction": "Outbound"
+            }
+          },
+          {
+            "name": "IntraSubnet-Communication",
+            "properties": {
+              "protocol": "*",
+              "sourcePortRange": "*",
+              "destinationPortRange": "*",
+              "sourceAddressPrefix": "[parameters('IPRange')]",
+              "destinationAddressPrefix": "[parameters('IPRange')]",
+              "access": "Allow",
+              "priority": 998,
+              "direction": "Outbound"
+            }
+          },
+          {
+            "name": "[concat('Deny-',parameters('ClientShortName'),'-VNET')]",
+            "properties": {
+              "protocol": "*",
+              "sourcePortRange": "*",
+              "destinationPortRange": "*",
+              "sourceAddressPrefix": "[parameters('IPRange')]",
+              "destinationAddressPrefix": "VirtualNetwork",
+              "access": "Deny",
+              "priority": 999,
+              "direction": "Outbound"
+            }
+          },
+          {
+            "name": "HTTP",
+            "properties": {
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "80",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 200,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "SSL",
+            "properties": {
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "443",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 210,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "Nagios",
+            "properties": {
+              "protocol": "*",
+              "sourcePortRange": "*",
+              "destinationPortRange": "12489",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 209,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "Webdeploy",
+            "properties": {
+              "protocol": "*",
+              "sourcePortRange": "*",
+              "destinationPortRange": "8172",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 208,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "SQL",
+            "properties": {
+              "protocol": "*",
+              "sourcePortRange": "*",
+              "destinationPortRange": "1433",
+              "sourceAddressPrefix": "4.78.164.162",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 220,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "RDP-RDSServer",
+            "properties": {
+              "protocol": "*",
+              "sourcePortRange": "*",
+              "destinationPortRange": "3389",
+              "sourceAddressPrefix": "10.254.1.7/32",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 229,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "RDP",
+            "properties": {
+              "protocol": "*",
+              "sourcePortRange": "*",
+              "destinationPortRange": "3389",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "access": "Deny",
+              "priority": 299,
+              "direction": "Inbound"
+            }
+          }
+        ]
+      },
+      "dependsOn": [ ]
+    }
+
+  ],
+  "outputs": {
+    "networksecuritygroup": {
+      "type": "string",
+      "value": "[concat('Network Security Group Created for ',parameters('ClientShortName'))] "
+    }
+  }
+}
